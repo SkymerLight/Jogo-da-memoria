@@ -28,7 +28,7 @@
       const e = JSON.parse(localStorage.getItem(CHAVE));
       if (e) return e;
     } catch (e) {}
-    return { grade: '5x4', area: null, tamanho: null, verso: null, cartas: {}, feitos: [] };
+    return { grade: '5x4', modo: 'auto', area: null, celulas: null, tamanho: null, verso: null, cartas: {}, feitos: [] };
   }
 
   function salvar() {
@@ -48,7 +48,40 @@
     a.innerHTML = html || '';
   }
 
+  function modoAuto() {
+    return estado.modo !== 'manual';
+  }
+
+  function temTabuleiro() {
+    return modoAuto() ? Boolean(estado.celulas) : Boolean(estado.area);
+  }
+
+  function aplicarDeteccao() {
+    const det = detectarTabuleiro(imagem);
+    if (!det) {
+      return Boolean(estado.celulas && estado.tamanho && estado.tamanho.w === imagem.width && estado.tamanho.h === imagem.height);
+    }
+    const grade = `${det.colunas}x${det.linhas}`;
+    if (grade !== estado.grade) {
+      estado.grade = grade;
+      estado.cartas = {};
+      estado.feitos = [];
+      estado.verso = null;
+      pendentes = {};
+      render();
+    }
+    estado.celulas = det.celulas;
+    estado.tamanho = { w: imagem.width, h: imagem.height };
+    $('#selGrade').value = estado.grade;
+    return true;
+  }
+
   function retanguloCelula(i) {
+    if (modoAuto() && estado.celulas) {
+      const c = estado.celulas[i];
+      const mx = c.w * 0.06, my = c.h * 0.05;
+      return { x: c.x + mx, y: c.y + my, w: c.w - 2 * mx, h: c.h - 2 * my };
+    }
     const { colunas, linhas } = dims();
     const a = estado.area;
     const w = a.w / colunas, h = a.h / linhas;
@@ -113,8 +146,8 @@
   }
 
   function processar(exigirConfirmacao) {
-    if (!imagem || !estado.area) return;
-    if (estado.tamanho && (estado.tamanho.w !== imagem.width || estado.tamanho.h !== imagem.height)) {
+    if (!imagem || !temTabuleiro()) return;
+    if (!modoAuto() && estado.tamanho && (estado.tamanho.w !== imagem.width || estado.tamanho.h !== imagem.height)) {
       aviso('O tamanho da janela mudou desde a marcação. Abra "Configurar tabuleiro" e marque de novo.');
       return;
     }
@@ -146,7 +179,7 @@
     if (!exigirConfirmacao || novas) {
       status(viradas.length
         ? `Viradas agora: ${viradas.join(', ')} · ${novas} nova(s) anotada(s).`
-        : 'Nenhuma carta virada encontrada. Confira a marcação do tabuleiro.');
+        : 'Nenhuma carta virada encontrada.');
     }
   }
 
@@ -245,13 +278,16 @@
     tela.width = imagem.width;
     tela.height = imagem.height;
     ctx.drawImage(imagem, 0, 0);
-    const a = selecaoTemp || estado.area;
-    if (!a) return;
     const esp = Math.max(2, imagem.width / 300);
     ctx.lineWidth = esp;
-    ctx.strokeStyle = '#ff7a1a';
-    ctx.strokeRect(a.x, a.y, a.w, a.h);
-    if (selecaoTemp) return;
+    if (selecaoTemp || !modoAuto()) {
+      const a = selecaoTemp || estado.area;
+      if (!a) return;
+      ctx.strokeStyle = '#ff7a1a';
+      ctx.strokeRect(a.x, a.y, a.w, a.h);
+      if (selecaoTemp) return;
+    }
+    if (!temTabuleiro()) return;
     const { total } = dims();
     ctx.strokeStyle = 'rgba(60,255,143,.8)';
     ctx.font = `${Math.round(esp * 7)}px system-ui`;
@@ -277,11 +313,19 @@
       const url = await chrome.tabs.captureVisibleTab(aba ? aba.windowId : undefined, { format: 'png' });
       const blob = await (await fetch(url)).blob();
       imagem = await createImageBitmap(blob);
+      if (modoAuto() && !marcando && !aplicarDeteccao()) {
+        if (!automatico) {
+          $('#config').open = true;
+          desenhar();
+          status('Não achei o tabuleiro nessa captura. Deixe as cartas inteiras visíveis ou use "Marcar manualmente".');
+        }
+        return;
+      }
       if (!automatico || $('#config').open) desenhar();
-      if (!estado.area) {
+      if (!temTabuleiro()) {
         $('#config').open = true;
         desenhar();
-        iniciarMarcacao('Primeiro uso: arraste um retângulo envolvendo todas as cartas do tabuleiro, na imagem abaixo.');
+        iniciarMarcacao('Arraste um retângulo envolvendo todas as cartas do tabuleiro, na imagem abaixo.');
         return;
       }
       processar(automatico);
@@ -332,6 +376,9 @@
     inicio = null;
     if (selecaoTemp.w > 20 && selecaoTemp.h > 20) {
       estado.area = selecaoTemp;
+      estado.modo = 'manual';
+      estado.celulas = null;
+      atualizarModo();
       estado.tamanho = { w: imagem.width, h: imagem.height };
       estado.verso = null;
       estado.cartas = {};
@@ -360,8 +407,35 @@
     iniciarMarcacao('Arraste um retângulo da borda de fora da primeira carta até a borda de fora da última.');
   };
 
+  function atualizarModo() {
+    $('#btnDetectar').classList.toggle('ativo', modoAuto());
+    $('#btnDetectar').textContent = modoAuto() ? 'Detecção automática: on' : 'Detecção automática: off';
+    $('#selGrade').disabled = modoAuto();
+  }
+
+  $('#btnDetectar').onclick = async () => {
+    estado.modo = 'auto';
+    estado.celulas = null;
+    marcando = false;
+    $('#btnMarcar').classList.remove('ativo');
+    atualizarModo();
+    salvar();
+    if (!imagem) {
+      await capturar(false);
+      return;
+    }
+    if (aplicarDeteccao()) {
+      salvar();
+      desenhar();
+      status(`Tabuleiro ${estado.grade.replace('x', ' × ')} encontrado.`);
+    } else {
+      status('Não achei o tabuleiro. Capture de novo com as cartas inteiras visíveis.');
+    }
+  };
+
   $('#selGrade').value = estado.grade;
   $('#selGrade').onchange = (e) => {
+    if (modoAuto()) return;
     estado.grade = e.target.value;
     estado.cartas = {};
     estado.feitos = [];
@@ -407,6 +481,7 @@
     } catch (e) {}
   }
 
+  atualizarModo();
   render();
   verificarAtualizacao();
 })();

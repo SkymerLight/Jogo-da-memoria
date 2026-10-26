@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Anotador da Memória",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Painel lateral que guarda as cartas do jogo da memória a partir de capturas da tela.",
   "permissions": ["sidePanel", "activeTab"],
   "host_permissions": ["<all_urls>"],
