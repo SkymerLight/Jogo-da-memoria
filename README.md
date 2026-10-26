@@ -1,5 +1,19 @@
 # Ajudante do Jogo da Memória (cartinha.net)
 
+## Anotador por print (`anotador.html`)
+
+Página separada que não interage com o site: você cola prints da tela e ela organiza as cartas.
+
+1. Abra o `anotador.html` no navegador (duplo clique no arquivo).
+2. Tire um print da tela inteira (`PrtSc`) e aperte `Ctrl+V` na página.
+3. Na primeira vez, arraste um retângulo envolvendo todas as cartas do tabuleiro. A marcação fica salva.
+4. A cada jogada, tire outro print e cole. As cartas viradas são recortadas e guardadas na posição certa, e os pares iguais ficam destacados com a mesma cor (P1, P2...).
+5. Use "Já peguei" para marcar um par concluído e "Nova rodada" para limpar.
+
+Dica: use sempre print da tela inteira (ou sempre o mesmo recorte), com a janela no mesmo lugar e o mesmo zoom, para as posições baterem.
+
+## Userscript (`jogo-da-memoria.user.js`)
+
 Userscript que anota as cartas que você vira em https://cartinha.net/memoria e mostra um painel com a posição de cada uma.
 
 - Painel flutuante (arrastável) com a grade espelhada do tabuleiro
