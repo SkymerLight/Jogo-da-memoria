@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Anotador da Memória",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Painel lateral que guarda as cartas do jogo da memória a partir de capturas da tela.",
   "permissions": ["sidePanel", "activeTab"],
-  "host_permissions": ["https://cartinha.net/*"],
+  "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },
   "side_panel": { "default_path": "painel.html" },
   "action": {
@@ -14,7 +14,7 @@
   "icons": { "16": "icones/16.png", "32": "icones/32.png", "48": "icones/48.png", "128": "icones/128.png" },
   "commands": {
     "capturar": {
-      "suggested_key": { "default": "Alt+Shift+M" },
+      "suggested_key": { "default": "Alt+Shift+K" },
       "description": "Capturar o tabuleiro"
     }
   }

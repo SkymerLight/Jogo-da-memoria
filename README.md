@@ -11,8 +11,9 @@ Instalação:
 4. Fixe o ícone da extensão na barra e clique nele com o jogo aberto: o painel lateral abre.
 
 Uso:
-- **Capturar** (ou `Alt+Shift+M`): tira uma captura da aba e anota as cartas viradas.
-- **Auto**: captura sozinho a cada 1 segundo enquanto a aba ativa for `cartinha.net/memoria`.
+- **Capturar** (ou `Alt+Shift+K`, que dá para trocar em `chrome://extensions/shortcuts`): tira uma captura da aba e anota as cartas viradas.
+- **Auto**: captura sozinho duas vezes por segundo enquanto a aba ativa for `cartinha.net/memoria`. A carta é anotada na primeira captura em que aparece; capturas seguintes só trocam a imagem por uma mais nítida.
+- A permissão "ler e alterar dados em todos os sites" é exigida pelo Chrome para capturar a aba visível. A extensão não tem nenhum script de conteúdo: só tira a captura.
 - Na primeira captura, arraste um retângulo em volta de todas as cartas. Se mudar o tamanho da janela ou o zoom, remarque em "Configurar tabuleiro".
 
 Atualização: o painel avisa quando há versão nova no GitHub (requer repositório público). Para atualizar, baixe os arquivos novos por cima da pasta (ou `git pull`) e clique em **Recarregar** na extensão em `chrome://extensions`. Para publicar uma versão nova, aumente `version` no `extensao/manifest.json`.

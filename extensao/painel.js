@@ -3,7 +3,7 @@
   const LARG = 24, ALT = 36, DESLOC = 5;
   const LIMIAR_VERSO = 28;
   const LIMIAR_IGUAL = 30;
-  const INTERVALO_AUTO = 1000;
+  const INTERVALO_AUTO = 550;
   const URL_MANIFESTO = 'https://raw.githubusercontent.com/SkymerLight/Jogo-da-memoria/main/extensao/manifest.json';
   const URL_REPO = 'https://github.com/SkymerLight/Jogo-da-memoria';
   const CORES = ['#3cff8f', '#ffd23c', '#3cc8ff', '#ff5ca8', '#b77bff', '#ff8a3c', '#7dffea', '#ff4d4d', '#a8ff3c', '#ffffff'];
@@ -21,6 +21,7 @@
   let timerAuto = null;
   let capturando = false;
   let pendentes = {};
+  let falhas = 0;
 
   function carregar() {
     try {
@@ -122,22 +123,23 @@
     for (let i = 0; i < total; i++) assinaturas.push(assinatura(retanguloCelula(i)));
     if (!estado.verso) estado.verso = mediana(assinaturas);
     let novas = 0;
+    let alterou = false;
     const viradas = [];
     const proximosPendentes = {};
     assinaturas.forEach((a, i) => {
       if (distancia(a, estado.verso) <= LIMIAR_VERSO) return;
       viradas.push(i + 1);
       const atual = estado.cartas[i];
-      if (atual && semelhanca(atual.sig, a) <= LIMIAR_IGUAL) return;
-      if (exigirConfirmacao && !(pendentes[i] && semelhanca(pendentes[i], a) <= LIMIAR_IGUAL / 2)) {
-        proximosPendentes[i] = a;
-        return;
-      }
-      estado.cartas[i] = { sig: a, img: recorte(retanguloCelula(i)) };
-      novas++;
+      if (atual && atual.firme && semelhanca(atual.sig, a) <= LIMIAR_IGUAL) return;
+      const confirmada = !exigirConfirmacao || Boolean(pendentes[i] && semelhanca(pendentes[i], a) <= LIMIAR_IGUAL / 2);
+      proximosPendentes[i] = a;
+      if (atual && !confirmada) return;
+      estado.cartas[i] = { sig: a, img: recorte(retanguloCelula(i)), firme: confirmada };
+      alterou = true;
+      if (!atual) novas++;
     });
     pendentes = proximosPendentes;
-    if (novas) {
+    if (alterou) {
       salvar();
       render();
     }
@@ -283,9 +285,12 @@
         return;
       }
       processar(automatico);
+      falhas = 0;
     } catch (e) {
+      falhas++;
+      if (automatico && falhas < 5) return;
       if (automatico) alternarAuto(false);
-      status('Não consegui capturar a aba. Clique no ícone da extensão com o jogo aberto e tente de novo.');
+      status(`Não consegui capturar a aba: ${e && e.message ? e.message : e}`);
     } finally {
       capturando = false;
     }
