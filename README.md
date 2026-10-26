@@ -1,5 +1,22 @@
 # Ajudante do Jogo da Memória (cartinha.net)
 
+## Extensão com painel lateral (`extensao/`)
+
+Painel lateral do próprio Chrome (fica ao lado da página, fora do site). Não injeta nada no site e não lê o código dele: só captura a imagem da aba visível, como um print.
+
+Instalação:
+1. Baixe o repositório (Code → Download ZIP) e extraia, ou use `git clone`.
+2. Abra `chrome://extensions`, ative o **Modo do desenvolvedor** e clique em **Carregar sem compactação**.
+3. Escolha a pasta `extensao`.
+4. Fixe o ícone da extensão na barra e clique nele com o jogo aberto: o painel lateral abre.
+
+Uso:
+- **Capturar** (ou `Alt+Shift+M`): tira uma captura da aba e anota as cartas viradas.
+- **Auto**: captura sozinho a cada 1 segundo enquanto a aba ativa for `cartinha.net/memoria`.
+- Na primeira captura, arraste um retângulo em volta de todas as cartas. Se mudar o tamanho da janela ou o zoom, remarque em "Configurar tabuleiro".
+
+Atualização: o painel avisa quando há versão nova no GitHub (requer repositório público). Para atualizar, baixe os arquivos novos por cima da pasta (ou `git pull`) e clique em **Recarregar** na extensão em `chrome://extensions`. Para publicar uma versão nova, aumente `version` no `extensao/manifest.json`.
+
 ## Anotador por print (`anotador.html`)
 
 Página separada que não interage com o site: você cola prints da tela e ela organiza as cartas.

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anotador da Memória</title>
+<link rel="stylesheet" href="painel.css">
+</head>
+<body>
+<header>
+  <div class="linha">
+    <h1>🎃 Memória</h1>
+    <span id="versao" class="dica"></span>
+  </div>
+  <div class="linha botoes">
+    <button id="btnCapturar" class="principal" title="Atalho: Alt+Shift+M">📸 Capturar</button>
+    <button id="btnAuto" title="Captura sozinho enquanto o jogo estiver aberto">Auto: off</button>
+    <button id="btnLimpar">Nova rodada</button>
+  </div>
+  <div id="aviso" hidden></div>
+</header>
+
+<section>
+  <div id="tabuleiro"></div>
+  <div id="pares"></div>
+</section>
+
+<details id="config">
+  <summary>Configurar tabuleiro</summary>
+  <div class="linha botoes">
+    <button id="btnMarcar">Marcar tabuleiro</button>
+    <label class="dica">Grade
+      <select id="selGrade">
+        <option value="5x4">5 × 4</option>
+        <option value="4x4">4 × 4</option>
+        <option value="6x4">6 × 4</option>
+        <option value="6x5">6 × 5</option>
+      </select>
+    </label>
+  </div>
+  <div id="area"><canvas id="tela"></canvas><div id="vazio">Clique em Capturar com o jogo aberto.</div></div>
+</details>
+
+<div id="status" class="dica"></div>
+<script src="painel.js"></script>
+</body>
+</html>
