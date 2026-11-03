@@ -18,12 +18,19 @@
     <button id="btnLimpar">Nova rodada</button>
   </div>
   <div id="aviso" hidden></div>
+  <div id="sugestao" hidden></div>
 </header>
 
 <section>
   <div id="tabuleiro"></div>
   <div id="pares"></div>
 </section>
+
+<details id="padroes">
+  <summary>Padrões (histórico de rodadas)</summary>
+  <div id="padroesConteudo"></div>
+  <div class="linha botoes"><button id="btnLimparHistorico">Apagar histórico</button></div>
+</details>
 
 <details id="config">
   <summary>Configurar tabuleiro</summary>
@@ -44,6 +51,7 @@
 
 <div id="status" class="dica"></div>
 <script src="detector.js"></script>
+<script src="visao.js"></script>
 <script src="painel.js"></script>
 </body>
 </html>

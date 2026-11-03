@@ -28,6 +28,15 @@ button.ativo { border-color: var(--verde); color: var(--verde); }
   background: #3a2210; border: 1px solid var(--laranja); font-size: 12px;
 }
 #aviso a { color: #ffb36b; }
+#sugestao {
+  margin-top: 10px; padding: 8px 10px; border-radius: 8px;
+  background: #10261a; border: 1px solid var(--verde); color: var(--verde); font-weight: 700;
+}
+.cel.sugerida { outline: 3px solid #fff; outline-offset: -3px; animation: pulsar 1s ease-in-out infinite; }
+.cel.aberta { outline: 2px dashed var(--laranja); outline-offset: -2px; }
+@keyframes pulsar { 50% { outline-color: var(--verde); } }
+#padroesConteudo { margin-top: 8px; display: grid; gap: 4px; }
+#padroesConteudo .destaque { color: var(--texto); font-weight: 700; }
 section { margin-top: 12px; }
 #tabuleiro { display: grid; gap: 5px; }
 .cel {

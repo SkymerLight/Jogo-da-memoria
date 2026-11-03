@@ -15,6 +15,11 @@ Uso:
 - **Auto**: captura sozinho duas vezes por segundo enquanto a aba ativa for `cartinha.net/memoria`. A carta é anotada na primeira captura em que aparece; capturas seguintes só trocam a imagem por uma mais nítida.
 - A permissão "ler e alterar dados em todos os sites" é exigida pelo Chrome para capturar a aba visível. A extensão não tem nenhum script de conteúdo: só tira a captura.
 - O tabuleiro é encontrado sozinho em cada captura (detecção automática), inclusive a grade (5 × 4 etc.). Funciona mesmo se você rolar a página, mudar o tamanho da janela ou o zoom.
+- O verso das cartas é aprendido sozinho em cada captura (funciona mesmo quando o jogo troca o tema das cartas).
+- Quando as duas cartas de um par ficam abertas ao mesmo tempo, o par é marcado como pego automaticamente.
+- A caixa verde de sugestão indica qual carta abrir: primeiro pares já conhecidos, depois a posição que mais vezes foi par no histórico.
+- No fim da rodada o jogo revela todas as cartas: o tabuleiro completo é salvo no histórico. A seção "Padrões" compara as rodadas (repetição de posições, distância mais comum entre pares) com o que seria esperado se fosse aleatório.
+- As anotações são zeradas sozinhas quando começa uma rodada nova (00:00, 08:00, 14:00, 20:00); o histórico é mantido.
 - Se a detecção falhar, use "Configurar tabuleiro" → "Marcar manualmente" e arraste um retângulo em volta de todas as cartas. Para voltar ao automático, clique em "Detecção automática".
 
 Atualização: o painel avisa quando há versão nova no GitHub (requer repositório público). Para atualizar, baixe os arquivos novos por cima da pasta (ou `git pull`) e clique em **Recarregar** na extensão em `chrome://extensions`. Para publicar uma versão nova, aumente `version` no `extensao/manifest.json`.
